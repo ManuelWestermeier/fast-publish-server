@@ -1,0 +1,28 @@
+@add http
+
+@init {
+
+    if (argc < 5) {
+        cerr << "wrong usage : PORT PATHNAME RESPONSETYPE RESPONSEPARTS" << endl;
+        return 1;
+    }
+
+    int portFromUser = atoi(argv[1]);
+    string pathNameFromUser = argv[2];
+    string responseTypeFromUser = argv[3];
+    string responseStringFromUser = argv[4];
+
+    for(int i = 5; i < argc; i++) {
+        responseStringFromUser += argv[i];
+    }
+
+    // HTTP Server
+    httplib::Server svr;
+    
+    svr.Get(pathNameFromUser, [&responseStringFromUser, &responseTypeFromUser](const httplib::Request &, httplib::Response &res) {
+        res.set_content(responseStringFromUser, responseTypeFromUser);
+    });
+
+    svr.listen("0.0.0.0", portFromUser);
+
+}
